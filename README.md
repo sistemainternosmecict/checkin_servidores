@@ -10,6 +10,8 @@ Na segunda página:
 
 ## Como rodar o servidor localmente?
 
+É preciso baixar o arquivo csv da planilha de base que está no drive. Pois o app está pronto para ler as colunas como estava lá, no entanto a última coluna será criada em tempo de execução.
+
 Coloque o arquivo da lista em formato .csv na pasta raiz (a pasta do main) do projeto com o nome: **"data.csv"** e rode o servidor com os seguintes comandos:
 
 ## Windows
