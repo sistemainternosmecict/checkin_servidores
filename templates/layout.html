@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}"> -->
+    <title>CHECKIN / Servidores</title>
+</head>
+
+<style>
+    :root {
+        --cor1: #9476a5; /* cor de baixo */
+        --cor2: #008080; /* cor de cima */
+    }
+
+    body,
+    html {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: linear-gradient(to top, var(--cor1), var(--cor2));
+        height: 100vh;
+    }
+
+    div.menu{
+        position: fixed;
+        bottom: 0;
+        background-color: white;
+        height: 64px;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+
+        a{
+            border: solid 1px black;
+            border-radius: 8px;
+            padding: 8px;
+            text-decoration: none;
+            align-self: center;
+            color: white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            background-color: var(--cor1);
+            font-size: 18px;
+        }
+    }
+
+    header{
+        background-color: #ccc;
+        h3{
+            text-align: center;
+            margin: 0;
+        }
+    }
+
+    div.box {
+        margin: 8px;
+        display: flex;
+        flex-direction: column;
+
+        label{
+            color: white;
+        }
+
+        label{
+            text-align: center;
+            font-weight: bold;
+        }
+
+        input{
+            padding: 8px;
+        }
+    }
+
+    #cpf {
+        width: 100%;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 8px;
+        padding: 8px;
+        outline-color: #008080;
+    }
+    
+    #numeroPulseira{
+        width: 100%;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 8px;
+        padding: 8px;
+        outline-color: #008080;
+    }
+
+    .resultados {
+        border: 1px solid #ccc;
+        max-width: 320px;
+        margin-top: 5px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    .itemForm {
+        background-color: white;
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        transition: background 0.2s;
+        margin: 8px 0;
+        border-radius: 8px;
+    }
+
+    .itemForm:hover {
+        background-color: #f0f0f0;
+    }
+
+    .right{
+        display: grid;
+        place-content: center;
+
+        .btnChecar{
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            border-radius: 8px;
+            border: solid 1px green;
+        }
+
+        .validBox{
+            background-color: rgb(119, 209, 119);
+            padding: 8px;
+            border-radius: 8px;
+            .validCheck{
+                font-size: 16px;
+                color: green;
+            }
+        }
+    }
+
+    .nome {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .cpf, .matricula, .secretaria, .numero {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .pulseira{
+        color: green;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .highlight {
+        color: #1a73e8; /* destaque para o CPF digitado */
+        font-weight: bold;
+    }
+
+    .boxInput{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    #limpar {
+        font-size: 18px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        color: #963535;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+    }
+</style>
+
+<body>
+    {% block conteudo%} {% endblock %}
+
+    <div class="menu">
+        <a href="/">Buscar CPF</a>
+        <a href="/buscar_pulseira">Buscar pulseira</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+/static
+/venv
+/__pycache__
+/dist
+/build
+data.csv

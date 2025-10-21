@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block conteudo %}
+
+
+<div class="box">
+    <label for="cpf">Buscar CPF</label>
+    <div class="boxInput">
+        <input type="text" placeholder="CPF (somente os dígitos)" maxlength="11" inputmode="numeric" name="cpf" id="cpf" maxlength="11" autocomplete="off">
+        <button type="button" id="limpar">✖</button>
+    </div>
+    <div id="resultados"></div>
+</div>
+
+<script>
+    const input = document.getElementById("cpf");
+    const resultados = document.getElementById("resultados");
+    const limpar = document.getElementById("limpar");
+
+    limpar.addEventListener("click", () => {
+        input.value = "";
+        resultados.innerHTML = "";
+        input.focus();
+    });
+
+    input.addEventListener("input", async () => {
+        const cpfDigitado = input.value;
+
+        if (cpfDigitado.length === 0) {
+            resultados.innerHTML = "";
+            document.documentElement.style.height = "100vh"; // html
+            document.body.style.height = "100vh"; // body
+            return;
+        }
+
+        const res = await fetch(`/buscar?cpf=${cpfDigitado}`);
+        const dados = await res.json();
+
+        resultados.innerHTML = "";
+
+        dados.forEach(u => {
+            const formItem = document.createElement("form");
+            formItem.classList.add("itemForm"); // opcional para estilizar
+            formItem.action = "/checkin_validate"; // endpoint do back-end
+            formItem.method = "post";
+
+            // destacar o começo do CPF digitado
+            const cpfStr = u.cpf.toString();
+            const highlightCpf = `<span class="highlight">${cpfStr.slice(0, cpfDigitado.length)}</span>${cpfStr.slice(cpfDigitado.length)}`;
+
+            formItem.innerHTML = `
+                <div class="left">
+                    <div class="cpf">CPF: ${highlightCpf}</div>
+                    <div class="nome">${u.nome}</div>
+                    <div class="numero">Pulseira: <span class="pulseira">${u.numero}</span></div>
+                </div>
+                <div class="right">
+                    ${
+                        u.validado && u.validado.toString().trim().toLowerCase() === "sim"
+                        ? '<div class="validBox">Checado <span class="validCheck">✔</span></div>'
+                        : `<button class="btnChecar" type="submit">Checar</button>`
+                    }
+                </div>
+                <input type="hidden" name="hidden_cpf" value="${u.cpf}">
+            `;
+
+            // adicionar listener para evitar comportamento padrão se quiser processar via JS
+            const btnChecar = formItem.querySelector(".btnChecar");
+            if (btnChecar) {
+                btnChecar.addEventListener("click", (e) => {
+                    e.preventDefault(); // previne submissão padrão
+                    // aqui você pode chamar sua função de validação individual
+                    validarUsuario(u.cpf, formItem); 
+                });
+            }
+
+            resultados.appendChild(formItem);
+        });
+
+        if(resultados.length > 1){
+            document.documentElement.style.height = "auto"; // html
+            document.body.style.height = "auto"; // bodyd
+        }
+
+    });
+
+    function validarUsuario(cpf, formElement) {
+        fetch("/checkin_validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cpf: cpf })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // atualizar visual do item validado
+            const rightDiv = formElement.querySelector(".right");
+            rightDiv.innerHTML = '<div class="validBox">Checado <span class="validCheck">✔</span></div>';
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+{% endblock %}

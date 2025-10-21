@@ -1,0 +1,174 @@
+{% extends "layout.html" %}
+
+{% block conteudo %}
+<style>
+    #popup{
+        background-color: white;
+        border: solid 1px black;
+        display: none;
+
+        div{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+
+            input{
+                padding: 8px;
+                width: -webkit-fill-available;
+            }
+
+            button{
+                padding: 8px;
+                width: 100%;
+                margin: 8px 0;
+            }
+        }
+    }
+</style>
+
+<div class="box">
+    <label for="numeroPulseira">Buscar numero de Pulseira</label>
+    <div class="boxInput">
+        <input type="text" placeholder="Numero da pulseira (somente os dígitos)" maxlength="11" inputmode="numeric" name="numeroPulseira" id="numeroPulseira" maxlength="11" autocomplete="off">
+        <button type="button" id="limpar">✖</button>
+    </div>
+    <div id="resultados"></div>
+</div>
+
+<div id="popup">
+  <div>
+    <h3>Preencher dados</h3>
+    <input type="hidden" id="numero-popup">
+    <label>Nome:</label>
+    <input type="text" id="nome-popup"><br>
+    <label>CPF:</label>
+    <input type="text" id="cpf-popup"><br>
+    <button onclick="enviarDados()">Salvar</button>
+    <button onclick="fecharPopup()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+    const input = document.getElementById("numeroPulseira");
+    const resultados = document.getElementById("resultados");
+    const limpar = document.getElementById("limpar");
+
+    limpar.addEventListener("click", () => {
+        input.value = "";
+        resultados.innerHTML = "";
+        input.focus();
+
+        fecharPopup()
+    });
+
+    input.addEventListener("input", async () => {
+        const numeroPulseira = input.value;
+
+        if (numeroPulseira.length === 0) {
+            resultados.innerHTML = "";
+            document.documentElement.style.height = "100vh"; // html
+            document.body.style.height = "100vh"; // body
+            return;
+        }
+
+        const res = await fetch(`/buscar_numero?numeroPulseira=${numeroPulseira}`);
+        const dados = await res.json();
+
+        resultados.innerHTML = "";
+
+        dados.forEach(u => {
+            const formItem = document.createElement("form");
+            formItem.classList.add("itemForm"); // opcional para estilizar
+            formItem.action = "/preencher_campos"; // endpoint do back-end
+            formItem.method = "post";
+
+            // destacar o começo do CPF digitado
+            const numeroPulseiraStr = u.numero.toString();
+            const highlightNumero = `<span class="highlight">${numeroPulseiraStr.slice(0, numeroPulseira.length)}</span>${numeroPulseiraStr.slice(numeroPulseira.length)}`;
+
+            formItem.innerHTML = `
+                <div class="left">
+                    <div class="numero">NUMERO: ${highlightNumero}</div>
+                    <div class="nome">${u.nome}</div>
+                    <div class="cpf">Cpf: <span class="cpf_numero">${u.cpf}</span></div>
+                </div>
+                <div class="right">
+                    ${
+                        u.validado && u.validado.toString().trim().toLowerCase() === "sim"
+                        ? '<div class="validBox">Checado <span class="validCheck">✔</span></div>'
+                        : `<button type="button" class="btnRegistrar">Registrar</button>`
+                    }
+                </div>
+                <input type="hidden" name="hidden_cpf" value="${u.cpf}">
+            `;
+
+
+            // adicionar listener para evitar comportamento padrão se quiser processar via JS
+            const btnRegistrar = formItem.querySelector(".btnRegistrar");
+            if (btnRegistrar) {
+                btnRegistrar.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    console.log("Número buscado:", u.numero); // ✅ Mostra no console
+                    abrirPopup(u.numero);
+                });
+            }
+
+            resultados.appendChild(formItem);
+        });
+
+        if(resultados.length > 1){
+            document.documentElement.style.height = "auto"; // html
+            document.body.style.height = "auto"; // bodyd
+        }
+
+    });
+
+    function validarUsuario(cpf, formElement) {
+        fetch("/checkin_validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cpf: cpf })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // atualizar visual do item validado
+            const rightDiv = formElement.querySelector(".right");
+            rightDiv.innerHTML = '<div class="validBox">Checado <span class="validCheck">✔</span></div>';
+        })
+        .catch(err => console.error(err));
+    }
+
+    function abrirPopup(numero) {
+        document.getElementById("numero-popup").value = numero;
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function fecharPopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function enviarDados() {
+        const numero = document.getElementById("numero-popup").value;
+        const nome = document.getElementById("nome-popup").value.trim();
+        const cpf = document.getElementById("cpf-popup").value.trim();
+
+        if (!nome || !cpf) {
+            alert("Preencha todos os campos!");
+            return;
+        }
+
+        fetch("/preencher_campos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ numero, nome, cpf })
+        })
+        .then(res => res.json())
+        .then(data => {
+            fecharPopup();
+            // location.reload();
+            location.href = "/"
+        });
+    }
+</script>
+{% endblock %}
