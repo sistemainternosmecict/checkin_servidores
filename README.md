@@ -8,13 +8,26 @@ Na primeira página:
 Na segunda página:
 - Buscar número da pulseira, no caso de cortesia para registrar nome completo, cpf e registrar a passagem pela entrada.
 
-## Como usar?
+## Como rodar o servidor localmente?
 
-Colocar o arquivo de lista em formato .csv na pasta do executável com o nome: **"data.csv"** e rodar o arquivo executável.
+Coloque o arquivo da lista em formato .csv na pasta raiz (a pasta do main) do projeto com o nome: **"data.csv"** e rode o servidor com os seguintes comandos:
 
-No navegador dos smartphones, acessar o ip indicado na interface do software.
+## Windows
+```bash
+$ py -m venv venv
+$ source venv/Scripts/activate
+$ py main.py
+```
+
+## Mac/Linux
+```bash
+$ python3 -m venv venv
+$ source venv/Scripts/activate
+$ python3 main.py
+```
+
+No navegador dos smartphones, acesse o ip do servidor indicado no terminal.
 
 ---
 ## Desenvolvimento
-Autor: Thyéz de Oliveira Monteiro
-SMECICT / Sala 25
+Autor: Thyéz de Oliveira Monteiro (SMECICT / Sala 25)
