@@ -10,7 +10,9 @@ Na segunda página:
 
 ## Como rodar o servidor localmente?
 
-É preciso baixar o arquivo csv da planilha de base que está no drive. Pois o app está pronto para ler as colunas como estava lá, no entanto a última coluna será criada em tempo de execução.
+Na planilha do drive, insira uma nova coluna a direita da última com o título "validado".
+
+É preciso baixar o arquivo csv dessa planilha de base. O app está pronto para ler as colunas como estão lá, incluindo a coluna "validado".
 
 Coloque o arquivo da lista em formato .csv na pasta raiz (a pasta do main) do projeto com o nome: **"data.csv"** e rode o servidor com os seguintes comandos:
 
@@ -39,6 +41,10 @@ $ python3 main.py
 ## Como acessar o sistema após rodar o servidor?
 
 No navegador dos smartphones, acesse o ip do servidor indicado no terminal.
+
+Exemplo:
+http://[ip_do_servidor]:5000
+
 
 ---
 ## Desenvolvimento
