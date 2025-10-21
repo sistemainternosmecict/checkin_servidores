@@ -19,7 +19,9 @@ def resource_path(filename: str) -> str:
 # Caminho do arquivo CSV (gravável e acessível)
 arquivo = resource_path("data.csv")
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder=resource_path("templates"),
+            static_folder=resource_path("static"))
 
 @app.route("/", methods=["GET"])
 def index():
@@ -101,16 +103,6 @@ def preencher_campos():
     except Exception as e:
         print("Erro ao processar JSON:", e)
         return jsonify({"mensagem": "Erro ao processar requisição."}), 500
-
-def get_local_ip():
-    """Obtém o IP local do dispositivo na rede LAN."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-    finally:
-        s.close()
-    return ip
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
