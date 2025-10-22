@@ -18,23 +18,31 @@ Coloque o arquivo da lista em formato .csv na pasta raiz (a pasta do main) do pr
 
 ## Windows
 ```bash
+# Crie o ambiente virtual venv
 $ py -m venv venv
 
+# Ative-o
 $ source venv/Scripts/activate
 
+# Instale as dependências do projeto
 $ pip install -r requirements.txt
 
+# Rode o arquivo principal para iniciar o servidor
 $ py main.py
 ```
 
 ## Mac/Linux
 ```bash
+# Crie o ambiente virtual venv
 $ python3 -m venv venv
 
+# Ative-o
 $ source venv/Scripts/activate
 
+# Instale as dependências do projeto 
 $ pip install -r requirements.txt
 
+# Rode o arquivo principal para iniciar o servidor
 $ python3 main.py
 ```
 
